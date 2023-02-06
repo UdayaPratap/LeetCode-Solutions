@@ -12,17 +12,17 @@ class Solution {
         helper(candidates, target, 0, new ArrayList<Integer>(), ans);
         return ans;
     }
-    public int helper(int[] arr, int tar, int idx, List<Integer> smallAns, List<List<Integer>> res) {
+    public void helper(int[] arr, int tar, int idx, List<Integer> smallAns, List<List<Integer>> res) {
         if (tar == 0) {
             res.add(new ArrayList<Integer>(smallAns));
-            return 1;
+            return ;
         }
-        int count = 0;
+        
         int prev = -1;
         for (int i = idx; i < arr.length; ++i) {
             if (prev != arr[i] && tar - arr[i] >= 0) {
                 smallAns.add(arr[i]);
-                count += helper(arr, tar - arr[i], i + 1, smallAns, res);
+                 helper(arr, tar - arr[i], i + 1, smallAns, res);
                 smallAns.remove(smallAns.size() - 1);
             }
             
@@ -31,7 +31,7 @@ class Solution {
             
             prev = arr[i];
         }
-        return count;
+        return;
     }
     
 }
