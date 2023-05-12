@@ -8,32 +8,25 @@ The solution set must not contain duplicate subsets. Return the solution in any 
  */
 class Solution {
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-       Arrays.sort(nums);
-       List<List<Integer>> res=new ArrayList<>();
-       helper(0, Integer.MIN_VALUE, nums, new ArrayList<Integer>(), res); 
-       return res;
+        List<List<Integer>> ans=new ArrayList<>();
+        Arrays.sort(nums);
+        helper(ans, new ArrayList<Integer>(), nums, 0, new boolean[nums.length]);
+        return ans;
     }
-    void helper(int idx, int prev, int[] nums, List<Integer> curr, List<List<Integer>>res)
+    void helper(List<List<Integer>> ans, List<Integer> curr, int[] nums, int i, boolean[] visited)
     {
-        if(idx==nums.length)
-        {
-            
-            res.add(new ArrayList<>(curr));
+        if(i==nums.length){
+            ans.add(new ArrayList<>(curr));
             return;
         }
-        int val=nums[idx];
-        if(val==prev){
-            helper(idx+1, prev, nums, curr, res);
-            return;
-        }
+        //dont pick curr
+        helper(ans, curr, nums, i+1, visited);
         //pick
-        curr.add(val);
-        helper(idx+1, prev, nums , curr, res);
-        //change lates beginning pick to nums[idx] to avoid duplicates
-        prev=nums[idx];
-        //dont pick
+        if(i>0 && nums[i-1]==nums[i] && !visited[i-1]) return; //if nums[i-1] is not marked visited then that means it has already been processed for current pos and marked false again, hence no need to do again with nums[i],, if it was marked visited then that would mean it was used for another position, not current, hence then we would continue to add the present nums[i]
+        visited[i]=true;
+        curr.add(nums[i]);
+        helper(ans, curr, nums, i+1, visited);
         curr.remove(curr.size()-1);
-        helper(idx+1, prev, nums, curr, res);
-        
+        visited[i]=false;
     }
 }
