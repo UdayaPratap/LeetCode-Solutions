@@ -3,27 +3,20 @@ Given an array nums of distinct integers, return all the possible permutations. 
 */
 class Solution {
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> res =new LinkedList<>();
-         List<Integer> dt =new LinkedList<>();
-        for(int t:nums)
-            dt.add(t);
-
-        helper(res, new LinkedList<Integer>(),dt);
-        return res;
+        List<List<Integer>> ans=new ArrayList<>();
+        helper(ans, new ArrayList<Integer>(), nums);
+        return ans;
     }
-    void  helper(List<List<Integer>> res,List<Integer> perm, List<Integer> dt)
-    {
-        if(dt.size()==0){
-            res.add(perm);
+    void helper(List<List<Integer>> ans, List<Integer> curr, int[] nums){
+        if(curr.size()==nums.length){
+            ans.add(new ArrayList<>(curr));
             return;
         }
-        for(Integer t: dt)
-        {
-            List<Integer> tempPerm=new LinkedList<>(perm);
-             List<Integer> tempDt=new LinkedList<>(dt);
-             tempPerm.add(t);
-             tempDt.remove(t);
-             helper(res,tempPerm,tempDt);
+        for(int t : nums){
+            if(curr.contains(t)) continue;
+            curr.add(t);
+            helper(ans, curr, nums);
+            curr.remove(curr.size()-1);
         }
     }
 }
