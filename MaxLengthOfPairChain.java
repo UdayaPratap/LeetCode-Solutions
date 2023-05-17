@@ -12,7 +12,7 @@ class Solution {
         Arrays.sort(pairs, (a,b)->a[1]-b[1]);
         
         int high=pairs[0][1];
-        int low=pairs[0][0];
+        // int low=pairs[0][0];
         int len=1;
         for(int i=1;i<pairs.length;i++)
         {
@@ -21,11 +21,12 @@ class Solution {
                 high=pairs[i][1];
                 len++;
             }
-            else if(pairs[i][1]<low)
-            {
-                low=pairs[i][0];
-                len++;
-            }
+            //DONT NEED THIS AS THIS CASE NOT POSSIBLE SINCE ARRAY SORTED INCREASINGLY FOR STARTING PTS
+            // else if(pairs[i][1]<low)
+            // {
+            //     low=pairs[i][0];
+            //     len++;
+            // }
         }
         return len;
     }
