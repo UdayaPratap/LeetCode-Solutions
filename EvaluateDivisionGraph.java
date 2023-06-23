@@ -9,33 +9,26 @@ Note: The input is always valid. You may assume that evaluating the queries will
  */
 class Solution {
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        Map<String, Map<String, Double>> graph = makeGraph(equations, values);
-        
-        double []ans = new double[queries.size()];
+        Map<String, Map<String, Double>> map=makeGraph(equations, values);
+        //map: <numerator, <denominator, result>>
 
-        for(int i = 0; i < queries.size(); i++){
-            ans[i] = dfs(queries.get(i).get(0) , queries.get(i).get(1) , new HashSet<>(), graph);
+        double[] ans=new double[queries.size()];
+
+        for(int i=0; i<queries.size(); i++){
+            ans[i]=dfs(queries.get(i).get(0), queries.get(i).get(1), map, new HashSet<String>());
         }
         return ans;
     }
-    
-    public double dfs(String src, String dest, Set<String> visited, Map<String, Map<String, Double>> graph){
-        
-        if(graph.containsKey(src ) == false)
-            return -1.0;
-        
-        if(graph.get(src).containsKey(dest)){
-            return graph.get(src).get(dest);
-        }
-        
+    double dfs(String src, String dest, Map<String, Map<String, Double>> map, Set<String> visited)
+    {
+        if(!map.containsKey(src)) return -1.0;
+        if(map.get(src).containsKey(dest)) return map.get(src).get(dest);
         visited.add(src);
-        
-        for(Map.Entry<String, Double> nbr : graph.get(src).entrySet()){
-            if(visited.contains(nbr.getKey()) == false){
-                double weight = dfs(nbr.getKey(), dest, visited, graph);
-                if(weight != -1.0){
-                    return nbr.getValue() * weight;
-                }
+        Map<String, Double> curr=map.get(src);
+        for(String t: curr.keySet()){
+            if(!visited.contains(t)){
+                double weight=dfs(t, dest, map, visited);
+                if(weight!=-1.0) return weight*curr.get(t); //answer is division of src and t mult by weight(chain division resulting in multiplication)
             }
         }
         return -1.0;
@@ -57,5 +50,4 @@ class Solution {
         }
         return graph;
     }
-    
 }
