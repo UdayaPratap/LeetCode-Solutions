@@ -6,56 +6,32 @@ Return true if you can finish all courses. Otherwise, return false.
 
  
  */
-public boolean canFinish(int numCourses, int[][] prerequisites) {
-        // Create Array of lists -> adjecency matrix of graph
-        ArrayList<Integer>[] adj = new ArrayList[numCourses];
-        
-        // Fill all the nodes (0 to numCourses - 1) as array index holding newly created arraylists
-        for(int i=0; i<numCourses; i++) {
-            adj[i] = new ArrayList<>();
+class Solution {
+    public boolean canFinish(int n, int[][] pre) {
+        List<Integer>[] adj=new ArrayList[n];
+        int[] indegree=new int[n];
+        for(int i=0; i<n; i++) adj[i]=new ArrayList<>();
+        for(int[] t: pre){
+            //adj[course] contains courses that have course as prereq
+            adj[t[0]].add(t[1]);
         }
-        
-        // Fill the arraylists of each nodes with their outgoing edges/connected nodes
-        for(int[] pre : prerequisites) {
-            adj[pre[0]].add(pre[1]);
-        }
-        
-        // Define an array of visited (0 -> unvisited, 1 -> visited, 2 -> completed), initially filled with 0's 
-        int[] visited = new int[numCourses];
-        
-        // Do DFS for each of the array nodes to check a cycle
-        for(int i=0; i<numCourses; i++) {
-            if( !dfs(i, visited, adj))
-                return false;
-        }
-        
-        return true;
+        for(int i=0; i<n; i++) for(int t : adj[i]) indegree[t]++;
+        //increase the indegree of courses that have i as prereq
+        return bfsTopo(adj, indegree, n);        
     }
-    
-    public boolean dfs(int node, int[] visited, ArrayList<Integer>[] adj) {
-        // Return false if the node is visited and viewed again before completion
-        if(visited[node] == 1) {
-            return false;
+    boolean bfsTopo(List<Integer>[] adj, int[] indegree, int n){
+        Queue<Integer> q=new LinkedList();
+        for(int i=0; i<n; i++) if(indegree[i]==0) q.add(i);
+        //add courses with no prereqs to q as we can start from those at any time
+        int count=0;
+        while(!q.isEmpty()){
+            int curr=q.poll();
+            count++;
+            for(int t: adj[curr]){
+                indegree[t]--;
+                if(indegree[t]==0) q.add(t);
+            }
         }
-        
-        // Return true if the node is completed processing
-        if(visited[node] == 2) {
-            return true;
-        }
-         
-        // Mark the node as visited
-        visited[node] = 1;
-        
-        // DFS of all the other nodes current "node" is connected to
-        for(int n : adj[node]) {
-            if(!dfs(n, visited, adj))
-                return false;
-        }
-        
-        // If no more other nodes for the current "node" mark as completed and return true
-        
-        visited[node] = 2;
-        
-        return true;
+        return count==n? true: false;
     }
-} 
+}
