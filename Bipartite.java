@@ -32,3 +32,28 @@ class Solution {
         return true;
     }
 }
+
+//DFS
+class Solution {
+    public boolean isBipartite(int[][] graph) {
+        int n=graph.length;
+        int color[]=new int[n];
+        for(int i=0; i<n; i++){
+            if(color[i]==0){
+                color[i]=1;
+                if(!dfs(i, graph, color)) return false;
+            }
+        }
+        return true;
+    }
+    boolean dfs(int i, int graph[][], int color[]){
+        for(int t: graph[i]){
+            if(color[i]==color[t]) return false;
+            if(color[t]==0){
+                 color[t]= (color[i]==1)? 2: 1;
+                 if(!dfs(t, graph, color)) return false;
+            }    
+        }
+        return true;
+    }
+}
